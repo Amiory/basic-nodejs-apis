@@ -51,8 +51,6 @@ const editUserByIdHandler = (req, res) => {
   const id = req.url.split("/")[3];
   const userIndex = users.findIndex((user) => user.id === parseInt(id));
 
-  console.log(id);
-
   if (userIndex !== -1) {
     let body = "";
 
@@ -62,8 +60,6 @@ const editUserByIdHandler = (req, res) => {
 
     req.on("end", () => {
       users[userIndex].name = JSON.parse(body).name;
-      console.log(users);
-
       res.end(JSON.stringify(users[userIndex]));
     });
   } else {
@@ -75,10 +71,16 @@ const editUserByIdHandler = (req, res) => {
 // Delete user by id handler for route /api/users/:id
 const deleteUserByIdHandler = (req, res) => {
   const id = req.url.split("/")[3];
+  const userIndex = users.findIndex((user) => user.id === parseInt(id));
 
-  users = users.filter((user) => user.id !== parseInt(id));
-
-  res.end(JSON.stringify(users));
+  if (userIndex !== -1) {
+    const deletedUser = users.splice(userIndex, 1);
+    res.statusCode = 200;
+    res.end(JSON.stringify(deletedUser[0]));
+  } else {
+    res.statusCode = 404;
+    res.end(JSON.stringify({ message: "User not found" }));
+  }
 };
 
 // Not found handler
