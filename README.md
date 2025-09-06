@@ -13,6 +13,7 @@ A minimal Node.js API server demonstrating how to handle HTTP requests using the
 ```
 basic-nodejs-apis/
 ├── server.js
+├── userController.js
 ├── middleware.js
 ├── package.json
 ├── package-lock.json
@@ -20,6 +21,7 @@ basic-nodejs-apis/
 ```
 
 - `server.js`: Main server file where the HTTP server is created and routes are defined.
+- `userController.js`: Contains functions for handling requests related to users.
 - `middleware.js`: Contains middleware functions for logging and error handling.
 - `package.json`: Project metadata and dependencies.
 - `package-lock.json`: Exact versions of installed dependencies.
@@ -39,6 +41,14 @@ cd basic-nodejs-apis
 npm install
 ```
 
+## ➡️ API Endpoints
+
+- GET /api/users - Get all users
+- POST /api/users - Create a user
+- GET /api/users/:id - Get user by ID
+- PATCH /api/users/:id - Update a user
+- DELETE /api/users/:id - Delete a user
+
 ## ▶️ Usage
 
 Start the server:
@@ -46,6 +56,8 @@ Start the server:
 ```bash
 node server.js
 ```
+
+Use an API client such as Postman or curl to use the API endpoints.
 
 By default, the server runs on `http://localhost:3000`.
 
