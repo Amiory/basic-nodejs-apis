@@ -23,6 +23,7 @@ const getUserByIdHandler = (req, res) => {
   if (user) {
     res.write(JSON.stringify(user));
   } else {
+    res.statusCode = 404;
     res.write(JSON.stringify({ message: "User not found" }));
   }
   res.end();
@@ -44,6 +45,31 @@ const createUserHandler = (req, res) => {
     res.write(JSON.stringify(newUser));
     res.end();
   });
+};
+
+const editUserByIdHandler = (req, res) => {
+  const id = req.url.split("/")[3];
+  const userIndex = users.findIndex((user) => user.id === parseInt(id));
+
+  console.log(id);
+
+  if (userIndex !== -1) {
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on("end", () => {
+      users[userIndex].name = JSON.parse(body).name;
+      console.log(users);
+
+      res.end(JSON.stringify(users[userIndex]));
+    });
+  } else {
+    res.statusCode = 404;
+    res.end(JSON.stringify({ message: "User not found" }));
+  }
 };
 
 // Delete user by id handler for route /api/users/:id
@@ -79,6 +105,11 @@ const server = createServer((req, res) => {
         req.method === "DELETE"
       ) {
         deleteUserByIdHandler(req, res);
+      } else if (
+        req.url.match(/\/api\/users\/([0-9]+)/) &&
+        req.method === "PATCH"
+      ) {
+        editUserByIdHandler(req, res);
       } else {
         notFoundHandler(req, res);
       }
