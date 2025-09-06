@@ -3,7 +3,7 @@ import { middleware, jsonMiddleware } from "./middleware.js";
 
 const PORT = process.env.PORT || 3000;
 
-const users = [
+let users = [
   { id: 1, name: "Amy" },
   { id: 2, name: "Yuki" },
   { id: 3, name: "Armess" },
@@ -46,6 +46,15 @@ const createUserHandler = (req, res) => {
   });
 };
 
+// Delete user by id handler for route /api/users/:id
+const deleteUserByIdHandler = (req, res) => {
+  const id = req.url.split("/")[3];
+
+  users = users.filter((user) => user.id !== parseInt(id));
+
+  res.end(JSON.stringify(users));
+};
+
 // Not found handler
 const notFoundHandler = (req, res) => {
   res.statusCode = 404;
@@ -65,7 +74,12 @@ const server = createServer((req, res) => {
         getUserByIdHandler(req, res);
       } else if (req.url === "/api/users" && req.method === "POST") {
         createUserHandler(req, res);
-      } else if(req.url.startsWith("/public")) {} else {
+      } else if (
+        req.url.match(/\/api\/users\/([0-9]+)/) &&
+        req.method === "DELETE"
+      ) {
+        deleteUserByIdHandler(req, res);
+      } else {
         notFoundHandler(req, res);
       }
     });
